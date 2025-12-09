@@ -10,18 +10,9 @@ app.use(express.json());
 app.post('/api/signUp', async (req, res) => {
     const { firstName, emailId, password, confirmPassword, gender, ...rest } = req.body;
 
-    if (!firstName || !emailId || !password || !confirmPassword) {
-        return res.status(400).json({ message: 'First name, email, password and confirm password are required' });
-    }
-
     if (password !== confirmPassword) {
         return res.status(400).json({ message: 'Password and confirm password do not match' });
     }
-
-    if (!gender || !['male', 'female', 'other'].includes(gender.toLowerCase())) {
-        return res.status(400).json({ message: 'Invalid gender value' });
-    }
-
     try {
         const user = new User({ firstName, emailId, password, confirmPassword, gender, ...rest });
         await user.save();

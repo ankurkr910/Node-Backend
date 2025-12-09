@@ -1,4 +1,6 @@
+const { request } = require('express');
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -10,26 +12,36 @@ const userSchema = new mongoose.Schema({
     },
     emailId: {
         type: String,
-        required: true,
+        required: [true, 'Email is required' ],
         unique: true,
         lowercase: true,
         trim: true,
+        validate: [validator.isEmail, 'Please provide a valid email address']
     },
     DOB:{
         type: String,
+        required: [true, "Date of Birth is required"],
+        validate: {
+            validator:  (val) => {
+                return validator.isDate(val, { format: 'DD-MM-YYYY', strictMode: true });
+            },
+            message: props => `${props.value} is not a valid date of birth! Use format  DDD-MM-YYYY.`
+        }
+
     },
     gender: {
         type: String,
-        Validate(val) {
-            if (!['male', 'female', 'other'].includes(val.toLowerCase())) {
-                throw new Error('Invalid gender value')
-
-            }
+        required: [true, "Gender is required"],
+        validate: {
+            validator:  (val) => {
+                return ['male', 'female', 'other'].includes(String(val).toLowerCase());
+            },
+            message: props => `${props.value} is not a valid gender`
         }
     },
      password: {
         type: String,
-        required: true,
+        required: [true, 'Password is required' ]
     },
     confirmPassword: {
         type: String,
