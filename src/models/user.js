@@ -1,4 +1,3 @@
-const { request } = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
 
@@ -41,12 +40,20 @@ const userSchema = new mongoose.Schema({
     },
      password: {
         type: String,
-        required: [true, 'Password is required' ]
+        required: [true, 'Password is required' ],
+        validate: {
+            validator:  (val) => {
+                return validator.isStrongPassword(val, {
+                    minLength: 8,
+                    minLowercase: 1,
+                    minUppercase: 1,
+                    minNumbers: 1,
+                    minSymbols: 1
+                });
+            },
+            message: props => `Password is not strong enough. It should be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one symbol.`
+        }
     },
-    confirmPassword: {
-        type: String,
-        required: true,
-    }
 });
 
 module.exports = mongoose.model('User', userSchema);
