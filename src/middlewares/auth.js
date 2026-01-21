@@ -9,10 +9,8 @@ const userAuth = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({ message: 'Authorization token missing' });
         }
-
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-
-        const existingUser = await user.findById(decoded._id);
+        const { _id } = await jwt.verify(token, process.env.JWT_SECRET);
+        const existingUser = await user.findById(_id);
 
         if (!existingUser) {
             return res.status(401).json({ message: 'User not found' });
@@ -23,10 +21,10 @@ const userAuth = async (req, res, next) => {
         next();
 
     } catch (error) {
-        return res.status(500).json(error.message);
+        return res.status(500).json({message: error.message});
     }
 
 }
 
 
-module.exports = userAuth;
+module.exports = {userAuth};

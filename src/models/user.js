@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     emailId: {
         type: String,
         required: [true, 'Email is required' ],
-        unique: true,
+        unique: [true, 'User already exists' ],
         lowercase: true,
         trim: true,
         validate: [validator.isEmail, 'Please provide a valid email address']
@@ -31,10 +31,8 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: [true, "Gender is required"],
-        validate: {
-            validator:  (val) => {
-                return ['male', 'female', 'other'].includes(String(val).toLowerCase());
-            },
+        enum: {
+            values: ['male', 'female', 'other'],
             message: props => `${props.value} is not a valid gender`
         }
     },
@@ -43,17 +41,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required' ],
         validate: {
             validator:  (val) => {
-                return validator.isStrongPassword(val, {
-                    minLength: 8,
-                    minLowercase: 1,
-                    minUppercase: 1,
-                    minNumbers: 1,
-                    minSymbols: 1
-                });
+                return validator.isStrongPassword(val);
             },
             message: props => `Password is not strong enough. It should be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one symbol.`
         }
-    },
-});
+    }
+},{ timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
