@@ -9,7 +9,6 @@ const requestModel = new mongoose.Schema({
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
         required: true
     },
     status: {
@@ -20,6 +19,6 @@ const requestModel = new mongoose.Schema({
             message: props => `${props.value} is not a valid status`
         }   
     },
-}, {timestamps: true});
+});
 
 module.exports = mongoose.model('Request', requestModel); 
