@@ -5,7 +5,7 @@ const { userAuth } = require('./middlewares/auth');
 require('dotenv').config();
 const app = express();
 
-
+const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use('/', require('./routes/auth'));
@@ -15,8 +15,8 @@ app.use('/request', userAuth, require('./routes/request'));
 
 connectDB().then(() => {
     console.log('Database connection established');
-    app.listen(process.env.PORT || 3000, () => {
-        console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
     });
   }
   ).catch((err) => {
